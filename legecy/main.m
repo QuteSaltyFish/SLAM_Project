@@ -60,6 +60,7 @@ inliers_1 = points_12_IMG1(inliers);
 inliers_2 = points_12_IMG2(inliers);
 % 这里把inliers拿进去再算一遍本征矩阵
 [E,~] = estimateEssentialMatrix(inliers_1,inliers_2,mycamera);
+E
 %%%画出内点对应的匹配情况
 figure;
 showMatchedFeatures(IMG1,IMG2,inliers_1,inliers_2,'montage');
