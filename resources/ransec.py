@@ -1,5 +1,19 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import cv2
+from mpl_toolkits.mplot3d import Axes3D
+
+
+def cameraPoseToExtrinsics(ori, loc):
+    M_rot = np.linalg.inv(ori).squeeze()
+    M_trans = -np.matmul(ori, loc)
+    return M_rot, M_trans
+
+
+def cameraMatrix(mtx, R, t):
+    tmp = t.reshape(3, 1)
+    tmp = np.column_stack([R, tmp])
+    return np.matmul(mtx, tmp)
 
 
 def match(img1, img2, mtx):
@@ -43,18 +57,29 @@ def match(img1, img2, mtx):
         dst_pts = np.float32(
             [kp2[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
         H, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
-        retval, rotations, translations, normals = cv2.decomposeHomographyMat(
-            H, mtx)
-        inline1, inline2 = src_pts[mask.squeeze()], dst_pts[mask.squeeze()]
-        E, _ = cv2.findEssentialMat(inline1, inline2, mtx)
+
+        # inline1, inline2 = src_pts[mask.squeeze()], dst_pts[mask.squeeze()]
+        inline1 = [src_pts[idx]
+                   for idx, data in enumerate(mask.squeeze()) if data == 1]
+        inline2 = [dst_pts[idx]
+                   for idx, data in enumerate(mask.squeeze()) if data == 1]
+        inline1, inline2 = np.stack(
+            [inline1], axis=0).squeeze(), np.stack([inline2], axis=0).squeeze()
+        E, _ = cv2.findEssentialMat(src_pts, dst_pts, mtx)
         print(E)
-        _, R, t, _ = cv2.recoverPose(E, inline1, inline2, mtx)
-        print(R, t)
+
         matchesMask = mask.ravel().tolist()
 
     else:
         print("Not enough matches are found - %d/%d" % (len(good), 10))
         matchesMask = None
+
+    # plot the inline points
+    plt.subplot(2, 1, 1)
+    plt.scatter(inline1.squeeze()[:, 0], 480-inline1.squeeze()[:, 1])
+    plt.subplot(2, 1, 2)
+    plt.scatter(inline2.squeeze()[:, 0], 480-inline2.squeeze()[:, 1])
+    plt.savefig('2dplot.jpg')
 
     draw_params = dict(matchColor=(0, 255, 0),  # draw matches in green color
                        singlePointColor=(0, 0, 255),
@@ -67,3 +92,30 @@ def match(img1, img2, mtx):
     cv2.imwrite("face_brisk_bf_ransac_1519.jpg", vis)
     # cv2.waitKey()
     # cv2.destroyAllWindows()
+
+    _, ori2_1, loc2_1, _ = cv2.recoverPose(E, src_pts, dst_pts, mtx)
+    [M_rot2_1, M_trans2_1] = cameraPoseToExtrinsics(ori2_1, loc2_1)
+
+    ori1_1 = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+    loc1_1 = np.array([0, 0, 0])
+    [M_rot1_1, M_trans1_1] = cameraPoseToExtrinsics(ori1_1, loc1_1)
+
+    M_camera1 = cameraMatrix(mtx, M_rot1_1, M_trans1_1)
+    M_camera2 = cameraMatrix(mtx, M_rot2_1, M_trans2_1)
+
+    tmp = cv2.triangulatePoints(M_camera1, M_camera2, src_pts, dst_pts)
+    print(tmp)
+
+    # plot
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    x = tmp[0] / tmp[3]
+    y = tmp[1] / tmp[3]
+    z = tmp[2] / tmp[3]
+    ax.scatter(x, y, z, c='r', marker='o')
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
+
+    plt.savefig('3d.jpg')
+    print('debug')
