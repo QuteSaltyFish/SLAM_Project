@@ -65,6 +65,8 @@ def match(img1, img2, mtx):
                    for idx, data in enumerate(mask.squeeze()) if data == 1]
         inline1, inline2 = np.stack(
             [inline1], axis=0).squeeze(), np.stack([inline2], axis=0).squeeze()
+        # update the src_points and the dst_points
+        src_pts, dst_pts = inline1.reshape(-1, 1, 2), inline2.reshape(-1, 1, 2)
         E, _ = cv2.findEssentialMat(src_pts, dst_pts, mtx)
         print(E)
 
@@ -92,7 +94,10 @@ def match(img1, img2, mtx):
     cv2.imwrite("face_brisk_bf_ransac_1519.jpg", vis)
     # cv2.waitKey()
     # cv2.destroyAllWindows()
+    return E, src_pts, dst_pts
 
+
+def ThreeD_recovery(mtx, E, src_pts, dst_pts):
     _, ori2_1, loc2_1, _ = cv2.recoverPose(E, src_pts, dst_pts, mtx)
     [M_rot2_1, M_trans2_1] = cameraPoseToExtrinsics(ori2_1, loc2_1)
 

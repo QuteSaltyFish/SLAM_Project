@@ -1,0 +1,70 @@
+% This defines everything necessary for a thesis
+% Master's/PhD at UoR (or anywhere else).
+%
+% Do what you will with this package
+% 
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{uorthesis}
+  [2018/01/18 v0.01 LaTeX package for UOR thesis]
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\setlist{nosep} % Removes too much vertical spacing in lists
+\usepackage{booktabs}           % makes tables look good
+\usepackage{fancyhdr}           % For page number in the upper right (required) and other running headers(optional)
+\usepackage{setspace}           % For double-spacing (required)
+\usepackage{titlesec}           % For keeping chapter/chapter titles single-spaced
+\usepackage{etoolbox}           % For the flag determining if front matter goes into the TOC
+\usepackage{float}              % Helps float images to the top
+\RequirePackage{xcolor}
+% Define custom colors
+\definecolor{darkblue}{rgb}{0, 0, 0.5}
+\usepackage[colorlinks=true, allcolors=darkblue]{hyperref}           % Adds hyperlinks in the pdf
+\usepackage{csquotes}           % Makes quotes look good
+\usepackage[font=small,labelfont={bf,sf}, textfont={sf}, justification=centering]{caption}
+
+%% Font setup
+\usepackage{mathptmx}
+% \usepackage{lmodern}
+\usepackage{helvet}
+
+% Header height (to avoid fancyhdr error)
+\setlength{\headheight}{13.6pt}
+
+% Header formatting for regular pages
+\fancyhf{}
+\fancyhead[L]{\it\small\leftmark}
+\fancyhead[R]{\small\thepage}
+
+% Header formatting for chapter title pages
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyhead[R]{\small\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+% Formatting of chapter and chapter titles: keep them single-spaced in the midst of double-spaced text
+
+\usepackage{sectsty}
+\titleformat{\chapter}[hang]{\Huge\sffamily\bfseries}{\thechapter{. }}{0pt}{\Huge}
+\allsectionsfont{\normalfont\sffamily\bfseries}
+\usepackage{subfigure}
+\usepackage[subfigure]{tocloft} % subfigure option only if using subfigure package
+\renewcommand{\cfttoctitlefont}{\Huge \bfseries \sffamily} % ToC title
+\addto\captionsenglish{
+\renewcommand{\listfigurename}{\textsf{List of Figures}}
+\renewcommand{\listtablename}{\textsf{List of Tables}}
+}
+
+% Flag for whether to add front matter to TOC
+\newtoggle{fulltoc}
+\toggletrue{fulltoc}  % Change to \togglefalse{fulltoc} to remove front matter
+\renewcommand{\contentsname}{Table of Contents}
+
+\endinput
+%%
+%% End of file `uorthesis.sty'.

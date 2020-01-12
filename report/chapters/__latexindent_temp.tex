@@ -1,0 +1,55 @@
+\chapter{Quantum}
+\label{chap:Quantum}
+
+\section{State Space}
+The bit is the fundamental unit of information for classical information processing. In quantum information processing, the corresponding unit is the qubit, which is described mathematically by a vector of length one in a two-dimensional complex vector space. We use notation from physics to denote vectors that represent quantum states, enclosing vectors in a ket.
+
+位是经典信息处理的基本信息单元。 在量子信息处理中，对应的单位是qubit，在数学上由二维复数向量空间中长度为1的向量描述。 我们使用物理学上的符号来表示代表量子态的矢量，将矢量封装在ket中。
+
+\section{Unitary evolution and circuits}
+Basic evolutions of a quantum system are described by linear operations that preserve the norm; formally, these operations can be expressed as unitary complex matrices
+
+Quantum algorithms are commonly described as circuits (rather than by quantum Turing matrix machines) consisting of basic quantum gates from a universal set
+
+量子系统的基本演化是通过保持标准的线性运算来描述的。 形式上，这些运算可以表示为unit复矩阵
+
+量子算法通常被描述为由通用集合中的基本量子门组成的电路（而非量子图灵矩阵机)。
+
+\section{measurement}
+In addition to unitary evolution, we specify an operation called measurement, which, in the simplest case, takes a qubit and outputs a classical bit
+
+We further specify that, after the process of measurement, the quantum system collapses to the measured outcome. Thus, the quantum state is disturbed and it becomes classical: any further measurements have a deterministic outcome. We have described measurement with respect to the standard basis; of course, a measurement can be described according to an arbitrary basis; the probabilities of the outcomes can be computed by first applying the corresponding change-of-basis, followed by the standard basis measurement. Measurements can actually be described much more generally: e.g. we can describe outcomes of measurements of a strict subset of a quantum system-the mathematical formalism to describe the outcomes uses the density matrix formalism, which we do not describe here.
+
+除了单一进化之外，我们还指定了一种称为测量的操作，在最简单的情况下，该操作需要一个qubit并输出一个经典位
+
+我们进一步规定，在测量过程之后，量子系统崩溃到测量的结果。 因此，量子态受到干扰，成为经典态：任何进一步的测量都有确定性的结果。 我们已经根据标准描述了度量； 当然，可以根据任意基础描述测量。 结果的概率可以通过首先应用相应的基础变化，然后进行标准基础测量来计算。 实际上可以更一般地描述测量： 我们可以描述量子系统的严格子集的测量结果-描述结果的数学形式主义使用密度矩阵形式主义，在此不做描述。\textcite{Broadbent2016}
+
+
+
+\section{Quantum no-cloning}
+
+One of the most fundamental properties of quantum information is that it is not physically possible, in general, to clone a quantum system  (i.e. there is no physical process that takes as input a single quantum system, and outputs two identical copies of its input). A simple proof follows from the linearity of quantum operations.5 At the intuitive level, this principle is present in almost all of quantum cryptography, since it prevents the classical reconstruction of the description of a given qubit system. For instance, given a single copy $\alpha$ and $\beta$, because measuring disturbs the state. At the formal level, however, we generally of a general qubit $\alpha\vert 0\rangle$+ $\beta\vert 1\rangle$, it is not possible to “extract” a full classical description of require more sophisticated tools to prove the security of quantum cryptography protocols
+
+量子信息的最基本特性之一是，从总体上讲，物理上不可能克隆量子系统（即，没有物理过程将单个量子系统作为输入，并输出其输入的两个相同副本） 。 从量子操作的线性可以得到一个简单的证明。5在直觉上，这个原理几乎存在于所有量子密码学中，因为它阻止了给定量子位系统描述的经典重构。 例如，给定单个副本$ \ alpha $和$ \ beta $，因为测量会干扰状态。 但是，在形式层面上，我们通常使用通用的qubit $ \ alpha \ vert 0 \ rangle $ + $ \ beta \ vert 1 \ rangle $，因此不可能“提取”需要更复杂工具的完整经典描述。 证明量子密码协议的安全性。
+
+\section{Quantum entanglement and nonlocality}
+
+Acrucial and rather counter-intuitive feature ofquantummechanics is quantum entanglement, a physical phenomenon that occurs when quantum particles behave in such a way that the quantum state of each particle cannot be described individually. A simple example of such an entangled state are two qubits in the state $\frac{(\vert 00\rangle_{AB} +\vert 11\rangle_{AB})}{\sqrt{2}}$. When Alice measures her
+qubit (in system A), she obtains a random bit $a \in \{0, 1\}$ as outcome and her qubit collapses  to the state $\vert a\rangle_A$ she observed. At the same time, Bob’s qubit (in system B) also collapses to $\vert a\rangle_B$ and hence, a subsequent measurement by Bob yields the same outcome $b = a$. It is important to realize that this collapse of state at Bob’s side occurs simultaneously with Alice’s measurement, but it does not allow the players to send information from Alice to Bob.
+
+It simply provides Alice and Bob with a shared random bit. In general, quantum entanglement does not contradict the fundamental non-signaling principle of the theory of relativity stating that no information can travel faster than the speed of light.
+
+
+\section{Quantum cryptographic constructions}
+Many of quantum cryptographic protocols share the remarkable feature of being based on a very simple pattern of quantum information called conjugate coding. Because of its paramount importance in quantum cryptography, we first present this notion. We then show how conjugate coding is the crucial ingredient in the quantum- cryptographic constructions for quantum money, QKD, a quantum reduction from oblivious transfer to bit commitment, the limited-quantum-storage model and delegated quantum computation. Further topics covered in this section are quantum coin-flipping and device-independent cryptography.
+
+
+
+\section{Essential properties of polarized photons}
+
+Polarized light can be produced by sending an ordinary
+light beam through a polarizing apparatus such as a Polaroid filter or calcite crystal; the beam’s polarization axis is determined by the orientation of the polarizing apparatus in which the beam originates. Generating single polarized photons is also possible, in principle by picking them out of a polarized beam, and in practice by a variation of an experiment of Aspect \textcite{Aspect1982} et al.
+
+Although polarization is a continuous variable, the uncertainty principle forbids measurements on any single photon from revealing more than one bit about its polarization. For example, if a light beam with polarization axis $\alpha$ is sent into a filter oriented at angle $\beta$, the individual photons behave dichotomously and probabilistically, sorbed with the complementary probability $\sin{2(\alpha \beta)}$. being transmitted with probability $\cos{2(\alpha \beta)}$ and ab The photons behave deterministically only when the two axes are parallel (certain transmission) or perpendicular (certain absorption). 
+
+If the two axes are not perpendicular, so that some photons are transmitted, one might hope to learn additional information about $\alpha$ by measuring the transmitted photons again with a polarizer oriented at some third angle; but this is to no avail, because the transmitted photons, in passing through the $\beta$ polarizer, emerge with exactly $\beta$ polarization, having lost all memory of their previous polarization $\alpha$. Another way one might hope to learn more than one bit from a single photon would be not to measure it directly, but rather somehow amplify it into a clone of identically polarized photons, then perform measurements on these; but this hope is also vain, because such cloning can be shown to be inconsistent with the foundations of quantum mechanics\textcite{Wootters1982}.
