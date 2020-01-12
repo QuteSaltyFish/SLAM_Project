@@ -108,3 +108,33 @@ pixelPoint_i3 =
 Cam3 = cameraMatrix(mycamera,M_rot3,M_trans3);
 \end{lstlisting}
     
+
+\section{Bundle Adjustment}
+在matlab中调用Bundle Adjustment函数需要4个参数，分别是xyzPoints,pointTracks,cameraPoses,cameraParams，即世界坐标系中的点，在相机上的投影点，相机的姿态，相机的参数。
+
+为了生成pointTracks，我调用的matlab自带的viewSet函数来生成各个相机的信息序列。
+
+\begin{lstlisting}
+vSet = viewSet;
+vSet = addView(vSet, 1,'Points',validPoints_1,'Orientation',...
+    M_rot1,'Location',M_trans1);
+vSet = addView(vSet, 2,'Points',validPoints_2,'Orientation',...
+    M_rot2,'Location',M_trans2);
+vSet = addConnection(vSet,1,2,'Matches',indexPairs);
+vSet = addView(vSet, 3,'Points',validPoints_3,'Orientation',...
+    M_rot3,'Location',M_trans3);
+vSet = addConnection(vSet,1,3,'Matches',indexPairs2);
+
+tracks = findTracks(vSet);
+cameraPoses = poses(vSet);
+\end{lstlisting}
+
+从而得到了pointTrack以及cameraPoses。
+然后就是调用Bundle Adjustment函数，得到refined的点云坐标以及相机姿态
+\begin{lstlisting}
+[xyzPoints,errors] = triangulateMultiview(...
+    tracks,cameraPoses,cameraParams);
+
+[xyzRefinedPoints,refinedPoses] = ...
+    bundleAdjustment(xyzPoints,tracks,cameraPoses,cameraParams);
+\end{lstlisting}

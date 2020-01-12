@@ -92,7 +92,19 @@ figure;
 showMatchedFeatures(I1, I3, matchedPoints1_12(index12_1,:), pixelPoint_i3,'montage','PlotOptions',{'ro','go','y--'});
 title('I1 and I3');
 
+%%% prepare the parameters used for bundle adjustment
+vSet = viewSet;
+vSet = addView(vSet, 1,'Points',validPoints_1,'Orientation',...
+    M_rot1,'Location',M_trans1);
+vSet = addView(vSet, 2,'Points',validPoints_2,'Orientation',...
+    M_rot2,'Location',M_trans2);
+vSet = addConnection(vSet,1,2,'Matches',indexPairs);
+vSet = addView(vSet, 3,'Points',validPoints_3,'Orientation',...
+    M_rot3,'Location',M_trans3);
+vSet = addConnection(vSet,1,3,'Matches',indexPairs2);
 
+tracks = findTracks(vSet);
+cameraPoses = poses(vSet);
 
 % ViewId = {1; 2; 3};
 % Orientation = {eye(3); reOri_12; reOri_13};
@@ -108,35 +120,52 @@ colorIdx = sub2ind([size(I1, 1), size(I1, 2)], round(tmp1(index12_1,:)), ...
     round(tmp2(index12_1,:)));
 color = allColors(colorIdx, :);
 
-% Create the point cloud
-ptCloud = pointCloud(worldPoint_i3, 'Color', color);
+[xyzPoints,errors] = triangulateMultiview(tracks,cameraPoses,cameraParams);
+
+% z = xyzPoints(:,3);
+% idx = errors < 5 & z > 0 & z < 20;
+% pcshow(xyzPoints(idx, :),'VerticalAxis','y','VerticalAxisDir','down','MarkerSize',30);
+% hold on
+% plotCamera(cameraPoses, 'Size', 0.1);
+% hold off
 
 
-% Visualize the camera locations and orientations
-cameraSize = 0.3;
-figure
-plotCamera('Size', cameraSize, 'Color', 'r', 'Label', '1', 'Opacity', 0);
+[xyzRefinedPoints,refinedPoses] = ...
+    bundleAdjustment(xyzPoints,tracks,cameraPoses,cameraParams);
+pcshow(xyzRefinedPoints,'VerticalAxis','y','VerticalAxisDir',...
+    'down','MarkerSize',45);
 hold on
-grid on
-plotCamera('Location', reLoc_12, 'Orientation', reOri_12, 'Size', cameraSize, ...
-    'Color', 'b', 'Label', '2', 'Opacity', 0);
-plotCamera('Location', reLoc_13, 'Orientation', reOri_13, 'Size', cameraSize, ...
-    'Color', 'g', 'Label', '3', 'Opacity', 0);
-
-% Visualize the point cloud
-pcshow(ptCloud, 'VerticalAxis', 'y', 'VerticalAxisDir', 'down', ...
-    'MarkerSize', 45);
+plotCamera(cameraPoses, 'Size', 0.1)
+hold off
+% % Create the point cloud
+% ptCloud = pointCloud(worldPoint_i3, 'Color', color);
 
 
+% % Visualize the camera locations and orientations
+% cameraSize = 0.3;
+% figure
+% plotCamera('Size', cameraSize, 'Color', 'r', 'Label', '1', 'Opacity', 0);
+% hold on
+% grid on
+% plotCamera('Location', reLoc_12, 'Orientation', reOri_12, 'Size', cameraSize, ...
+%     'Color', 'b', 'Label', '2', 'Opacity', 0);
+% plotCamera('Location', reLoc_13, 'Orientation', reOri_13, 'Size', cameraSize, ...
+%     'Color', 'g', 'Label', '3', 'Opacity', 0);
+
+% % Visualize the point cloud
+% pcshow(ptCloud, 'VerticalAxis', 'y', 'VerticalAxisDir', 'down', ...
+%     'MarkerSize', 45);
 
 
-% Rotate and zoom the plot
-camorbit(0, -30);
-camzoom(1.5);
 
-% Label the axes
-xlabel('x-axis');
-ylabel('y-axis');
-zlabel('z-axis');
 
-title('Up to Scale Reconstruction of the Scene');
+% % Rotate and zoom the plot
+% camorbit(0, -30);
+% camzoom(1.5);
+
+% % Label the axes
+% xlabel('x-axis');
+% ylabel('y-axis');
+% zlabel('z-axis');
+
+% title('Up to Scale Reconstruction of the Scene');
