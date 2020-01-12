@@ -405,3 +405,6 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
+
+legecy/
+.vscode/
