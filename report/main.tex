@@ -7,6 +7,13 @@
 \addbibresource{references.bib}
 \usepackage{uorbib}
 \usepackage{listings}
+\usepackage{color,xcolor}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setmonofont[Mapping={}]{Menlo}    %英文引号之类的正常显示，相当于设置英文字体
+\setsansfont{Menlo} %设置英文字体 Menlo, Consolas,  Fantasque Sans Mono
+\setmainfont{Menlo} %设置英文字体
+\setCJKmainfont{PingFang SC}
 % Put custom packages to be loaded here
 % \usepackage{linguex}  % For linguistic examples
 % \usepackage{tikz}     % For drawing
@@ -51,9 +58,11 @@
 
 \include{chapters/01-introduction}
 
-\include{chapters/02-model}
+\include{chapters/02-Theory}
 
-\include{chapters/03-result}
+\include{chapters/03-Code}
+
+\include{chapters/04-Result}
 
 % \include{chapters/04-chapter}
 
